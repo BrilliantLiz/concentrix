@@ -15,10 +15,20 @@ namespace ConcentrixHW
                 Survey[] jsonData = (JsonConvert.DeserializeObject<Survey[]>
                     (File.ReadAllText(@"../../../DemoSurveys_v1.1.json")));
 
-                Console.Clear();
+                // Total number of surveys
                 Console.WriteLine("Total number of surveys is  " + jsonData.Length);
 
-                //Promoter surveys
+                // Trend number of surveys by month
+                string[] monthNames = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
+                Survey[] Surveys_2020 = Array.FindAll(jsonData, jd => jd.CompleteDate.Value.Year == 2020);
+                Console.WriteLine("Monthly trends in 2020: ");
+                for (int i = 01; i <= 12; i++)
+                {
+                    int count = Surveys_2020.Count(s => s.CompleteDate.Value.Month == i);
+                    Console.WriteLine(monthNames[i - 1] + " - " + count);
+                }
+
+                //Promoters surveys
                 int promotersSurveysNumber = 0;
                 foreach (Survey surv in jsonData)
                 {
@@ -30,7 +40,7 @@ namespace ConcentrixHW
                 Console.WriteLine("Percentage of promoters surveys is " +
                    ((double)promotersSurveysNumber / (double)jsonData.Length).ToString("0.000"));
 
-                //Closed Cases
+                //Closed cases
                 int closedCasesCount = 0;
                 foreach (Survey surv in jsonData)
                 {
@@ -48,24 +58,13 @@ namespace ConcentrixHW
                 AnswerParent FXOSITE_data = Array.Find(jsonData[409].Answers, sa => sa.QLabel == "FXOSITE");
                 AnswerParent QOSR_data = Array.Find(jsonData[409].Answers, sa => sa.QLabel == "QOSR");
 
-                Console.WriteLine("Data for survey # 410: ");
-                Console.WriteLine("FXDTETME = " + Convert.ToDateTime(FXDTETME_data.StringValue).ToString("MM/dd/yyyy"));
-                Console.WriteLine("FXEMAIL = " + FXEMAIL_data.StringValue);
-                Console.WriteLine("FXOSITE = " + FXOSITE_data.StringValue);
-                Console.WriteLine("QOSR Comment = " + QOSR_data.Comment);
+                Console.WriteLine("Data for survey #410: ");
+                Console.WriteLine("Survey Date: " + Convert.ToDateTime(FXDTETME_data.StringValue).ToString("MM/dd/yyyy"));
+                Console.WriteLine("Email Address: " + FXEMAIL_data.StringValue);
+                Console.WriteLine("Site: " + FXOSITE_data.StringValue);
+                Console.WriteLine("Respondent Comment: " + QOSR_data.Comment);
 
-
-                // Trend number of surveys by month
-                string[] monthNames = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
-                Survey[] Surveys_2020 = Array.FindAll(jsonData, jd => jd.CompleteDate.Value.Year == 2020);
-                Console.WriteLine("Monthly trends in 2020");
-                for (int i = 01; i <= 12; i++)
-                {
-                    int count = Surveys_2020.Count(s => s.CompleteDate.Value.Month == i);
-                    Console.WriteLine(monthNames[i - 1] + " - " + count);
-                }
                 Console.WriteLine("End of programm " + DateTime.Now);
-
             }
             catch (Exception e)
             {
